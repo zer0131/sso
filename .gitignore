@@ -39,4 +39,8 @@ nb-configuration.xml
 
 # 项目中忽略的文件
 *.swp
+service/Cache/
+service/Log/
+client/Cache/
+client/Log/
 
