@@ -21,7 +21,7 @@ $common = array(
     ),
     'redis' => array(
         'expire' => 0,
-        'prefix' => 'onefox_',
+        'prefix' => '',
         'server' => array(
             'host' => '127.0.0.1',
             'port' => 6379

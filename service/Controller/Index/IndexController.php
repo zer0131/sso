@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @author ryan<zer0131@vip.qq.com>
+ * @author ryan
  * @desc 默认控制器
  */
 namespace Controller\Index;
@@ -14,6 +14,6 @@ class IndexController extends ApiController {
      * 默认方法
      */
     public function indexAction(){
-        $this->json(self::CODE_SUCCESS, 'ok');
+        $this->json(self::CODE_SUCCESS, '请访问/sso/login');
     }
 }
