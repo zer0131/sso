@@ -6,6 +6,7 @@
  */
 
 $common = array(
+    'cookie_name' => 'sso_ticket',
     'apps' => array(
         '1' => array(
             'app_key' => 'test',
