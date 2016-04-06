@@ -7,11 +7,12 @@
 
 $common = array(
     'cookie_name' => 'sso_ticket',
+    'login_url' => '/sso/ldap',
     'apps' => array(
         '1' => array(
-            'app_key' => 'test',
-            'callback_url' => '',
-            'home_url' => ''
+            'app_key' => 'c4ca4238a0b923820dcc509a6f75849b',
+            'callback_url' => 'http://123.56.248.154:8085/callback',
+            'home_url' => 'http://123.56.248.154:8085'
         )
     )
 );
