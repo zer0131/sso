@@ -6,14 +6,14 @@
  */
 namespace Controller\Index;
 
-use OneFox\ApiController;
+use OneFox\Controller;
 
-class IndexController extends ApiController {
+class IndexController extends Controller {
     
     /**
      * 默认方法
      */
     public function indexAction(){
-        $this->json(self::CODE_SUCCESS, '请访问/sso/login');
+        echo 'ok';
     }
 }
