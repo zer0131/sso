@@ -8,6 +8,7 @@ namespace Controller\Sso;
 
 use OneFox\ApiController as BaseController;
 use OneFox\Request;
+use OneFox\Config;
 use Lib\SSO\Code;
 use Lib\SSO\Session;
 use Lib\SSO\Ticket;
@@ -30,6 +31,15 @@ class ApiController extends BaseController {
         if (!$code || !$appKey || !$appId) {
             $this->json(self::CODE_FAIL, 'params error');
         }
+        $apps = Config::get('sso.apps');
+        if (!isset($apps[$appId])) {
+            $this->json(self::CODE_FAIL, 'params error');
+        }
+        $appInfo = $apps[$appId];
+        if (strtolower($appKey) != strtolower($appInfo['app_key'])) {
+            $this->json(self::CODE_FAIL, 'params error');
+        }
+
         $codeObj = new Code();
         $res = $codeObj->checkCode($code);//返回session id
         if (empty($res)) {
