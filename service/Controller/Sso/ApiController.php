@@ -26,7 +26,7 @@ class ApiController extends BaseController {
     public function check_codeAction() {
         $code = $this->post('code');
         $appKey = $this->post('app_key');
-        $appId = $this->post('app_id');
+        $appId = $this->post('app_id', 0, 'int');
         if (!$code || !$appKey || !$appId) {
             $this->json(self::CODE_FAIL, 'params error');
         }
@@ -54,6 +54,23 @@ class ApiController extends BaseController {
      * 校验ticket[POST]
      */ 
     public function check_ticketAction() {
-        //code
+        $ticket = $this->post('ticket');
+        $appId = $this->post('app_id', 0, 'int');
+        if (!$appId || !$ticket) {
+            $this->json(self::CODE_FAIL, 'params error');
+        }
+        $ticketObj = new Ticket();
+        $sessionId = $ticketObj->originData($ticket);
+        $sessObj = new Session();
+
+        //session超时或不存在
+        if (!$sessObj->isExists($sessionId)) {
+            $this->json(self::CODE_FAIL, 'check ticket error');
+        }
+
+        //重置session过期时间
+        $sessObj>extendedTime($sessionId);
+
+        $this->json(self::CODE_SUCCESS, 'ok');
     }
 }
