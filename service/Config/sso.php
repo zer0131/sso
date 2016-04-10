@@ -7,6 +7,7 @@
 
 $common = array(
     'cookie_name' => 'sso_ticket',
+    'cookie_path' => '/',
     'login_url' => '/sso/ldap',
     'apps' => array(
         '1' => array(
