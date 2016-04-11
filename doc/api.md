@@ -22,7 +22,7 @@ GET
 
 ### 请求示例
 ```
-http://mis.diditaxi.com.cn/auth/sso/login?app_id=1&jumpto=%2F
+/sso/login?app_id=1&jumpto=%2F
 ```
 
 ### 注意
