@@ -8,6 +8,8 @@
 namespace Lib\SSO;
 
 use OneFox\Cache;
+use OneFox\Config;
+use OneFox\Request;
 
 class Session {
     private $_redis;
@@ -102,8 +104,8 @@ class Session {
      * @return string
      */
     public function getSessionid(){
-        $cookieName = md5(\OneFox\Config::get('sso.cookie_name'));
-        $cookie = \OneFox\Request::cookie($cookieName);
+        $cookieName = md5(Config::get('sso.cookie_name'));
+        $cookie = Request::cookie($cookieName);
         $ticketObj = new Ticket();
         return $ticketObj->originData($cookie);
     }
