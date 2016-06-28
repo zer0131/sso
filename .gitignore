@@ -24,7 +24,7 @@ Desktop.ini
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
-# PHPStorm忽略文件
+# intellij idea忽略文件
 .idea/
 
 # NetBeans忽略文件
