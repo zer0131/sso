@@ -23,6 +23,7 @@ class LoginController extends ApiController {
             echo 'appid not found';
             return;
         }
+        $appId = (string)$appId;
         $jumpto = $this->get('jumpto');
 
         //安全检测
@@ -77,6 +78,8 @@ class LoginController extends ApiController {
         );
         $param = http_build_query($paramArr);
 
-        Response::redirect(Config::get('sso.login_url').'?'.$param);
+        $loginUrl = Config::get('sso.login_url');
+        $loginUrl .= '?'.$param;
+        Response::redirect($loginUrl);
     }
 }

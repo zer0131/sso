@@ -32,6 +32,7 @@ class ApiController extends BaseController {
             $this->json(self::CODE_FAIL, 'params error');
         }
         $apps = Config::get('sso.apps');
+        $appId = (string)$appId;
         if (!isset($apps[$appId])) {
             $this->json(self::CODE_FAIL, 'params error');
         }

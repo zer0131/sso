@@ -17,8 +17,8 @@ use OneFox\Response;
 class LogoutController extends ApiController {
 
     public function indexAction() {
-        $app_id = $this->get('app_id', 0, 'int');
-        if (!$app_id) {
+        $appId = $this->get('app_id', 0, 'int');
+        if (!$appId) {
             echo 'params error';
             return;
         }
@@ -42,6 +42,8 @@ class LogoutController extends ApiController {
         );
         $param = http_build_query($paramArr);
 
-        Response::redirect(Config::get('sso.login_url').'?'.$param);
+        $loginUrl = Config::get('sso.login_url');
+        $loginUrl .= '?'.$param;
+        Response::redirect($loginUrl);
     }
 }
