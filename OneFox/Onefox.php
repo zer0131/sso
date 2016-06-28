@@ -26,7 +26,7 @@ final class Onefox {
         date_default_timezone_set("PRC");
         
         //--------定义常量--------//
-        define('ONEFOX_VERSION', '1.0.1');
+        define('REQUEST_ID', uniqid());
         define('IS_CLI',PHP_SAPI=='cli' ? true:false);
         !defined('DS') && define('DS', DIRECTORY_SEPARATOR);//目录分隔符
         !defined('MODULE_MODE') && define('MODULE_MODE', true);//默认开启模块模式(Controller目录下含有子目录)
@@ -73,6 +73,25 @@ final class Onefox {
         //--------简单路由--------//
         Dispatcher::dipatcher();
         
+        //------定义执行class常量-----//
+        define('CURRENT_MODULE', Dispatcher::getModuleName());
+        define('CURRENT_CONTROLLER', Dispatcher::getControllerName());
+        define('CURRENT_ACTION', Dispatcher::getActionName());
+        
+        //-----请求日志------// 
+        $params = array();
+        $log = array(
+            'request' => $_SERVER['REQUEST_URI'],
+            'request_id' => REQUEST_ID,
+            'class' => array('module'=>CURRENT_MODULE,'controller'=>CURRENT_CONTROLLER,'action'=>CURRENT_ACTION),
+            'method' => Request::method(),
+            'params' => array_merge($params, Request::gets(),Request::posts()),
+            'stream' => Request::stream(),
+            'cookie' => Request::cookies(),
+            'ip' => Request::ip(),
+        );
+        C::log($log);
+        
         //--------执行--------//
         self::_exec();
         
@@ -95,9 +114,6 @@ final class Onefox {
     }
     
     private static function _exec(){
-        define('CURRENT_MODULE', Dispatcher::getModuleName());
-        define('CURRENT_CONTROLLER', Dispatcher::getControllerName());
-        define('CURRENT_ACTION', Dispatcher::getActionName());
         $className = 'Controller\\';
         $className .= empty(CURRENT_MODULE) ? '' : ucfirst(CURRENT_MODULE).'\\';
         $className .= ucfirst(CURRENT_CONTROLLER).'Controller';
@@ -152,12 +168,15 @@ final class Onefox {
             self::$_error = null;
             self::_halt($e);
         }
-        if (DEBUG) {
-            $log_info['url'] = $_SERVER['REQUEST_URI'];
-            $log_info['runtime'] = number_format((microtime(true) - self::$_startTime) * 1000, 0).'ms';
-            $log_info['runmemory'] = number_format( (memory_get_usage(true) - self::$_memoryStart) / (1024), 0, ",", "." ).'kb';
-            C::log($log_info);
-        }
+        //输出日志
+        $log = array(
+            'response' => Response::getResData(),
+            'type' => Response::getResType(),
+            'request_id' => REQUEST_ID,
+            'run time' => number_format((microtime(true) - self::$_startTime) * 1000, 0).'ms',
+            'run memory' => number_format( (memory_get_usage(true) - self::$_memoryStart) / (1024), 0, ",", "." ).'kb'
+        );
+        C::log($log);
     }
     
     private static function _halt($e){
@@ -168,10 +187,10 @@ final class Onefox {
             include_once ONEFOX_PATH.DS.'Tpl'.DS.'excetion.html';
         } else {
             $log_info['url'] = $_SERVER['REQUEST_URI'];
-            $log_info['msg'] = $e->getMessage();
+            $log_info['errmsg'] = $e->getMessage();
             $log_info['file'] = $e->getFile();
             $log_info['line'] = $e->getLine();
-            C::log($log_info, 'error');//记录错误日志
+            C::log($log_info, Log::ERROR);//记录错误日志
             if (IS_CLI) {
                 exit();
             }

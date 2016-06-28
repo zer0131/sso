@@ -12,11 +12,11 @@ abstract class Controller {
     protected $view;
 
     public function __construct() {
-        $this->view = new View(); 
         //此方法可初始化控制器
         if (method_exists($this, '_init')){
             $this->_init();
         }
+        $this->view = new View();
     }
 
     protected function assign($name, $val='') {

@@ -114,7 +114,7 @@ class C {
                 $v['sort'] = $level;
                 $v['html'] = '|' . str_repeat($html, $level);
                 $tree[] = $v;
-                $tree = array_merge($tree, $this->html_tree($list, $v['id'], $level + 1, $html));
+                $tree = array_merge($tree, self::htmlToTree($list, $v['id'], $level + 1, $html));
             }
         }
         return $tree;
@@ -258,6 +258,59 @@ class C {
             return false;
         }
         return $data;
+    }
+
+    /**
+     * 计算两个时间戳的时间差
+     * @param $begin 开始时间戳
+     * @param $end 结束时间戳
+     * @param $returnStr 是否返回字符串
+     * @return array|string
+     */
+    public static function timeDiff($begin, $end, $returnStr=true) {
+        if ( $begin < $end ) {
+            $starttime = $begin;
+            $endtime = $end;
+        } else {
+            $starttime = $end;
+            $endtime = $begin;
+        }
+        $timediff = $endtime - $starttime;
+        $days = intval( $timediff / 86400 );
+        $daysStr = $days?$days.'天':'';
+        $remain = $timediff % 86400;
+        $hours = intval( $remain / 3600 );
+        $hoursStr = $hours?$hours.'小时':'';
+        $remain = $remain % 3600;
+        $mins = intval( $remain / 60 );
+        $minsStr = $mins?$mins.'分钟':'';
+        $secs = $remain % 60;
+        $secsStr = $secs?$secs.'秒':'';
+        if ($returnStr) {
+            return $daysStr.$hoursStr.$minsStr.$secsStr;
+        }
+        return array( "day" => $days, "hour" => $hours, "min" => $mins, "sec" => $secs );
+    }
+
+    /**
+     * 参数签名通用方法
+     * @param p array 参数
+     * @param signKey string 签名字符串
+     * @return string
+     */
+    public static function sign($p, $signKey='2#!&70op#e') {
+        $signStr = '';
+        if (empty($p) || !is_array($p)) {
+            return $signStr;
+        }
+        unset($p['sign']);
+        unset($p['signType']);
+        foreach ($p as $k => $v) {
+            if ($v !== '') {
+                $signStr .= "{$k}={$v}&";
+            }
+        }
+        return md5($signStr.$signKey);
     }
 }
 

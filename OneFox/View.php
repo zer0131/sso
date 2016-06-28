@@ -40,6 +40,8 @@ class View {
         header('Content-Type: text/html; charset=utf-8');
         header('Cache-control: private');  // 页面缓存控制
         header('X-Powered-By: OneFox');
+        Response::setResData(array('template'=>$this->_parsePath($tplFile), 'template_value'=>$this->tplVal));
+        Response::setResType('text/html');
         echo $content;
     }
 

@@ -63,6 +63,9 @@ abstract class ApiController {
         }
         $json = Request::stream();
         $data = json_decode($json, true);
+        if (!$data) {
+            return $default;
+        }
         $data = Request::filterArray($data);
         return Request::filter($key, $data, $default, $type);
     }
@@ -76,6 +79,9 @@ abstract class ApiController {
         }
         $json = Request::stream();
         $data = json_decode($json, true);
+        if (!$data) {
+            return $default;
+        }
         $data = Request::filterArray($data);
         return Request::filter($key, $data, $default, $type);
     }
@@ -89,6 +95,9 @@ abstract class ApiController {
         }
         $json = Request::stream();
         $data = json_decode($json, true);
+        if (!$data) {
+            return $default;
+        }
         $data = Request::filterArray($data);
         return Request::filter($key, $data, $default, $type);
     }

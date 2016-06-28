@@ -18,6 +18,30 @@ class Response {
         'httponly' => true
     );
 
+    private static $_resData;
+    private static $_resType;
+
+
+    //设置返回类型
+    public static function setResType($type) {
+        self::$_resType = $type;
+    }
+
+    //获取返回类型
+    public static function getResType() {
+        return self::$_resType;
+    }
+
+    //设置输出数据
+    public static function setResData($data) {
+        self::$_resData = $data;
+    }
+
+    //获取返回数据
+    public static function getResData() {
+        return self::$_resData;
+    }
+
     /**
      * 输出json数据
      * @param type $data
@@ -25,6 +49,11 @@ class Response {
     public static function json($data){
         header('Content-Type:application/json; charset=utf-8');
         header('X-Powered-By: OneFox');
+        if (DEBUG) {
+            $data['request_id'] = REQUEST_ID;
+        }
+        self::$_resData = $data;
+        self::$_resType = 'application/json';
         exit(json_encode($data));
     }
     
@@ -35,6 +64,11 @@ class Response {
     public static function xml($data){
         header('Content-Type:text/xml; charset=utf-8');
         header('X-Powered-By: OneFox');
+        if (DEBUG) {
+            $data['request_id'] = REQUEST_ID;
+        }
+        self::$_resData = $data;
+        self::$_resType = 'text/xml';
         exit(xml_encode($data));
     }
     

@@ -35,7 +35,7 @@ class DB {
             $this->_pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
             $this->_bConnected = true;
         } catch (\PDOException $e) {
-            $this->_exceptionLog($e->getMessage().'(Connect error)');
+            $this->_exceptionLog($e->getMessage());
         }
     }
 
@@ -43,10 +43,11 @@ class DB {
      * 错误处理
      */ 
     private function _exceptionLog($message ,$sql = ""){
+        $msg = array('sql error'=>$message);
         if (!empty($sql)) {
-            $message .= "\r\nRaw SQL : "  . $sql;
+            $msg['raw sql'] = $sql;
         }
-        C::log($message, 'error');
+        C::log($msg, Log::ERROR);
     }
 
     public function close(){
@@ -115,13 +116,20 @@ class DB {
 
         $statement = strtolower($rawStatement[0]);
 
+        $res = null;
+
         if ($statement === 'select' || $statement === 'show') {
-            return $this->_sQuery->fetchAll($fetchmode);
+          $res = $this->_sQuery->fetchAll($fetchmode);
         } elseif ( $statement === 'insert' ||  $statement === 'update' || $statement === 'delete' ) {
-            return $this->_sQuery->rowCount();
-        } else {
-            return null;
+            $res =  $this->_sQuery->rowCount();
         }
+        $log = array(
+            'sql' => $query,
+            'params' => is_array($params)?json_encode($params):$params,
+            'data' => is_array($res)?json_encode($res):$res
+        );
+        C::log($log);
+        return $res;
     }
 
     /**
@@ -143,6 +151,12 @@ class DB {
         foreach ($Columns as $cells) {
             $column[] = $cells[0];
         }
+        $log = array(
+            'sql' => $query,
+            'params' => is_array($params)?json_encode($params):$params,
+            'data' => is_array($column)?json_encode($column):$column
+        );
+        C::log($log);
         return $column;
     }
 
@@ -152,7 +166,14 @@ class DB {
      */ 
     public function row($query ,$params = null,$fetchmode = \PDO::FETCH_ASSOC){
         $this->_init($query,$params);
-        return $this->_sQuery->fetch($fetchmode);
+        $res = $this->_sQuery->fetch($fetchmode);
+        $log = array(
+            'sql' => $query,
+            'params' => is_array($params)?json_encode($params):$params,
+            'data' => is_array($res)?json_encode($res):$res
+        );
+        C::log($log);
+        return $res;
     }
 
     /**
@@ -162,7 +183,14 @@ class DB {
      */ 
     public function single($query ,$params = null){
         $this->_init($query,$params);
-        return $this->_sQuery->fetchColumn();
+        $res = $this->_sQuery->fetchColumn();
+        $log = array(
+            'sql' => $query,
+            'params' => is_array($params)?json_encode($params):$params,
+            'data' => is_array($res)?json_encode($res):$res
+        );
+        C::log($log);
+        return $res;
     }
 
     /**

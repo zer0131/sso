@@ -9,6 +9,15 @@ namespace OneFox;
 
 final class Log {
 
+    const EMERGENCY = 'emergency';
+    const ALERT = 'alert';
+    const CRITICAL = 'critical';
+    const ERROR = 'error';
+    const WARNING = 'warning';
+    const NOTICE = 'notice';
+    const INFO = 'info';
+    const DEBUG = 'debug';
+
     private static $_instance = null;
     //默认配置
     private $_config = array(
@@ -69,14 +78,14 @@ final class Log {
             return false;
         }
         if (!is_array($msg)) {
-            $msg = array('msg'=>$msg);
+            $msg = array('log msg'=>$msg);
         }
-        $content = strtoupper($level).' '.$this->_getDate();
+        $content = '['.$this->_getDate().'] ['.strtoupper($level).']';
         foreach ($msg as $key => $val) {
             if (is_array($val)) {
                 $val = json_encode($val);//数组转化成json输出
             }
-            $content .= ' '.$key.'=['.$val.']';
+            $content .= ' ['.$key.']='.$val;
         }
         $content .= PHP_EOL;
         return file_put_contents($this->_logFile, $content, FILE_APPEND);
