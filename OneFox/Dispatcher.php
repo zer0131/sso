@@ -96,13 +96,12 @@ class Dispatcher {
     public static function getModuleName() {
         if (is_null(self::$_currentModule)) {
             self::$_currentModule = '';
-            return self::$_currentModule;
         }
-        return ucfirst(self::$_currentModule);
+        return self::$_currentModule;
     }
     
     public static function getControllerName() {
-        return ucfirst(self::$_currentController);
+        return ucfirst(strtolower(self::$_currentController));
     }
     
     public static function getActionName() {

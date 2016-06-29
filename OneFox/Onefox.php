@@ -26,6 +26,7 @@ final class Onefox {
         date_default_timezone_set("PRC");
         
         //--------定义常量--------//
+        define('ONEFOX_VERSION', '1.0.4');
         define('REQUEST_ID', uniqid());
         define('IS_CLI',PHP_SAPI=='cli' ? true:false);
         !defined('DS') && define('DS', DIRECTORY_SEPARATOR);//目录分隔符
@@ -34,6 +35,7 @@ final class Onefox {
         !defined('LOG_PATH') && define('LOG_PATH', APP_PATH.DS.'Log');//日志目录
         !defined('CONF_PATH') && define('CONF_PATH', APP_PATH.DS.'Config');//配置目录
         !defined('TPL_PATH') && define('TPL_PATH', APP_PATH.DS.'Tpl');//模板目录
+        !defined('LIB_PATH') && define('LIB_PATH', APP_PATH.DS.'Lib');//扩展类库目录
         !defined('DEFAULT_MODULE') && define('DEFAULT_MODULE', 'Index');//默认执行模块
         !defined('DEFAULT_CONTROLLER') && define('DEFAULT_CONTROLLER', 'Index');//默认执行控制器
         !defined('DEFAULT_ACTION') && define('DEFAULT_ACTION', 'index');//默认执行方法
@@ -73,12 +75,73 @@ final class Onefox {
         //--------简单路由--------//
         Dispatcher::dipatcher();
         
-        //------定义执行class常量-----//
-        define('CURRENT_MODULE', Dispatcher::getModuleName());
+        //--------执行--------//
+        self::_exec();
+        
+        return;
+    }
+    
+    public static function autoload($className){
+        $file = self::_parseClassPath($className);
+        if (file_exists($file)) {
+            require_once $file;
+            return class_exists($className);
+        }
+        return false;
+    }
+
+    //解析路径
+    private static function _parseClassPath($className) {
+        $class = $className;
+        $path = strtr($class, '\\', DS);
+        $file = null;
+        //加载框架文件
+        if (0 === strpos($class, 'OneFox\\')) {
+            $file = ONEFOX_PATH.substr($path, strlen('OneFox')).self::$_ext;
+            return $file;
+        }
+        //加载应用目录下文件
+        $file = APP_PATH.DS.$path.self::$_ext;
+        if (file_exists($file)) {
+            return $file;
+        }
+        //加载扩展库文件
+        $file = LIB_PATH.DS.$path.self::$_ext;
+        if (file_exists($file)) {
+            return $file;
+        }
+        return $file;
+    }
+    
+    private static function _exec(){
         define('CURRENT_CONTROLLER', Dispatcher::getControllerName());
         define('CURRENT_ACTION', Dispatcher::getActionName());
-        
-        //-----请求日志------// 
+        $controllerName = CURRENT_CONTROLLER.'Controller';
+        $currModule = Dispatcher::getModuleName();
+        $moduleName = '';
+        $realModuleName = '';
+        $className = '';
+        if (!empty($currModule)) {
+            //module名称兼容大小写
+            $moduleName = array(
+                ucfirst(strtolower($currModule)),//首字母大写
+                strtoupper($currModule),//大写
+                strtolower($currModule),//小写
+            );
+        }
+        if (is_array($moduleName)) {
+            foreach ($moduleName as $v) {
+                $className = sprintf('Controller\\%s\\%s', $v, $controllerName);
+                $realModuleName = $v;
+                if (class_exists($className)) {
+                    break;
+                }
+            }
+        } else {
+            $className = sprintf("Controller\\%s", $controllerName);
+        }
+        define('CURRENT_MODULE', $realModuleName);
+        //-----请求日志------//
         $params = array();
         $log = array(
             'request' => $_SERVER['REQUEST_URI'],
@@ -91,32 +154,6 @@ final class Onefox {
             'ip' => Request::ip(),
         );
         C::log($log);
-        
-        //--------执行--------//
-        self::_exec();
-        
-        return;
-    }
-    
-    public static function autoload($className){
-        $class = $className;
-        $path = strtr($class, '\\', DS);
-        if (0 === strpos($class, 'OneFox\\')) {
-            $file = ONEFOX_PATH.substr($path, strlen('OneFox')).self::$_ext;//加载框架类
-        } else {
-            $file = APP_PATH.DS.$path.self::$_ext;//加载应用类
-        }
-        if (is_file($file)) {
-            require_once $file;
-            return class_exists($className);
-        }
-        return false;
-    }
-    
-    private static function _exec(){
-        $className = 'Controller\\';
-        $className .= empty(CURRENT_MODULE) ? '' : ucfirst(CURRENT_MODULE).'\\';
-        $className .= ucfirst(CURRENT_CONTROLLER).'Controller';
         if (!class_exists($className)) {
             throw new \RuntimeException('类不存在');
         }
@@ -124,7 +161,7 @@ final class Onefox {
             $obj = new \ReflectionClass($className);
             
             if ($obj->isAbstract()) {
-                throw new \RuntimeException('抽象方法不可被实例化');
+                throw new \RuntimeException('抽象类不可被实例化');
             }
             
             $class = $obj->newInstance();
