@@ -4,14 +4,14 @@
  * @author ryan
  * @desc sso登陆控制器 
  */
-namespace Controller\Sso;
+namespace Controller\SSO;
 
 use OneFox\Config;
 use OneFox\Request;
 use OneFox\Response;
-use Lib\SSO\Ticket;
-use Lib\SSO\Session;
-use Lib\SSO\Code;
+use SSO\Ticket;
+use SSO\Session;
+use SSO\Code;
 
 use OneFox\ApiController;
 

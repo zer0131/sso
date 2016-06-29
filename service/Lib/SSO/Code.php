@@ -5,7 +5,7 @@
  * @desc code操作类
  */ 
 
-namespace Lib\SSO;
+namespace SSO;
 
 use OneFox\Cache;
 

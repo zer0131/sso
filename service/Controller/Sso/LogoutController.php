@@ -5,14 +5,14 @@
  * @desc sso退出控制器
  */ 
 
-namespace Controller\Sso;
+namespace Controller\SSO;
 
 use OneFox\ApiController;
 use OneFox\Config;
 use OneFox\Request;
-use Lib\SSO\Session;
-use Lib\SSO\Ticket;
 use OneFox\Response;
+use SSO\Session;
+use SSO\Ticket;
 
 class LogoutController extends ApiController {
 

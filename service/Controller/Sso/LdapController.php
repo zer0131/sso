@@ -5,7 +5,7 @@
  * @desc 模拟ldap
  */ 
 
-namespace Controller\Sso;
+namespace Controller\SSO;
 
 use OneFox\Controller;
 use OneFox\Request;

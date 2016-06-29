@@ -4,14 +4,14 @@
  * @author ryan
  * @desc sso接口控制器
  */
-namespace Controller\Sso;
+namespace Controller\SSO;
 
 use OneFox\ApiController as BaseController;
 use OneFox\Request;
 use OneFox\Config;
-use Lib\SSO\Code;
-use Lib\SSO\Session;
-use Lib\SSO\Ticket;
+use SSO\Code;
+use SSO\Session;
+use SSO\Ticket;
 
 class ApiController extends BaseController {
     
@@ -80,7 +80,7 @@ class ApiController extends BaseController {
         }
 
         //重置session过期时间
-        $sessObj>extendedTime($sessionId);
+        $r = $sessObj>extendedTime($sessionId);
 
         $this->json(self::CODE_SUCCESS, 'ok');
     }
