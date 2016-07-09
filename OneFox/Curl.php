@@ -31,10 +31,10 @@ class Curl {
     /**
      * GET请求
      * 请求时url中不需要携带参数，参数以$params数组传入
-     */ 
-    public function get($url, $params=array()) {
+     */
+    public function get($url, $params = array()) {
         if ($params) {
-            $url .= '?'.http_build_query($params);
+            $url .= '?' . http_build_query($params);
         }
         $this->_config[CURLOPT_URL] = $url;
         curl_setopt_array($this->_ch, $this->_config);
@@ -45,15 +45,15 @@ class Curl {
     /**
      * POST请求
      * $multi为数组时，则可以传文件
-     */ 
-    public function post($url, $params=array(), $multi=false) {
+     */
+    public function post($url, $params = array(), $multi = false) {
         $this->_config[CURLOPT_URL] = $url;
         $this->_config[CURLOPT_POST] = true;
         if ($params) {
             if ($multi && is_array($multi)) {
                 foreach ($multi as $key => $file) {
-                    if (version_compare(PHP_VERSION,'5.5.0','<')) {
-                        $params[$key] = '@'.$file;
+                    if (version_compare(PHP_VERSION, '5.5.0', '<')) {
+                        $params[$key] = '@' . $file;
                     } else {
                         $params[$key] = curl_file_create($file);//php5.5以后使用这种方式创建file
                     }
@@ -69,8 +69,8 @@ class Curl {
 
     /**
      * PUT请求
-     */ 
-    public function put($url, $params=array()) {
+     */
+    public function put($url, $params = array()) {
         $this->_config[CURLOPT_CUSTOMREQUEST] = 'PUT';
         $this->_config[CURLOPT_URL] = $url;
         if ($params) {
@@ -83,22 +83,22 @@ class Curl {
 
     /**
      * DELETE请求
-     */ 
-    public function delete($url, $params=array()) {
+     */
+    public function delete($url, $params = array()) {
         $this->_config[CURLOPT_CUSTOMREQUEST] = 'DELETE';
         $this->_config[CURLOPT_URL] = $url;
         if ($params) {
             $this->_config[CURLOPT_POSTFIELDS] = http_build_query($params);
         }
-        curl_setopt_array($this->_ch, $this->_config);   
+        curl_setopt_array($this->_ch, $this->_config);
         $result = curl_exec($this->_ch);
         return $result;
     }
 
     /**
      * curl高级请求，可以根据自己的需要设置curl
-     */ 
-    public function request($url, $curl_opt=array()) {
+     */
+    public function request($url, $curl_opt = array()) {
         $this->_config[CURLOPT_URL] = $url;
         array_merge($this->_config, $curl_opt);
         curl_setopt_array($this->_ch, $this->_config);
@@ -109,22 +109,22 @@ class Curl {
 
     /**
      * 请求详细信息
-     */ 
-    public function getInfo($opt=0) {
-        $info = curl_getinfo($this->_ch,$opt);
+     */
+    public function getInfo($opt = 0) {
+        $info = curl_getinfo($this->_ch, $opt);
         return $info;
     }
 
     /**
      * 错误信息
-     */ 
+     */
     public function getError() {
-        return curl_error($this->_ch); 
+        return curl_error($this->_ch);
     }
 
     /**
      * 错误号，为0则无错误
-     */ 
+     */
     public function isError() {
         return curl_errno($this->_ch);
     }

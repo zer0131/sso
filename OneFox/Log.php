@@ -45,16 +45,17 @@ final class Log {
     /**
      * 实例化类
      * @param string $conf_str 配置
-     */ 
-    public static function instance($conf_str='default') {
+     * @return object
+     */
+    public static function instance($conf_str = 'default') {
         if (!self::$_instance) {
             self::$_instance = new self($conf_str);
         }
         return self::$_instance;
     }
-    
+
     public function __construct($conf_str) {
-        $config = Config::get('log.'.$conf_str);
+        $config = Config::get('log.' . $conf_str);
         if ($config) {
             $this->_config = array_merge($this->_config, $config);
         }
@@ -69,8 +70,9 @@ final class Log {
      * 日志级别(由低到高): debug->info->notice->warning->error->critical->alert->emergency
      * @param string|array $msg
      * @param string $level
-     */ 
-    public function save($msg, $level='info') {
+     * @return boolean
+     */
+    public function save($msg, $level = 'info') {
         if (!$msg) {
             return false;
         }
@@ -78,14 +80,14 @@ final class Log {
             return false;
         }
         if (!is_array($msg)) {
-            $msg = array('log msg'=>$msg);
+            $msg = array('log msg' => $msg);
         }
-        $content = '['.$this->_getDate().'] ['.strtoupper($level).']';
+        $content = '[' . $this->_getDate() . '] [' . strtoupper($level) . ']';
         foreach ($msg as $key => $val) {
             if (is_array($val)) {
                 $val = json_encode($val);//数组转化成json输出
             }
-            $content .= ' ['.$key.']='.$val;
+            $content .= ' [' . $key . ']=' . $val;
         }
         $content .= PHP_EOL;
         return file_put_contents($this->_logFile, $content, FILE_APPEND);
@@ -103,7 +105,7 @@ final class Log {
 
     /**
      * 设置存入文件
-     */ 
+     */
     private function _setLogFile() {
         $log_dir = $this->_config['log_path'];
         if (!$log_dir) {
@@ -118,7 +120,7 @@ final class Log {
                 $this->_logFile = $log_dir . DS . $this->_config['filename'] . '.' . $this->_config['ext'];
             }
         } else {
-            $this->_logFile = $log_dir . DS . $this->_config['prefix'] . date('Y-m-d') . '.' . $this->_config['ext'];
+            $this->_logFile = $log_dir . DS . $this->_config['prefix'] . date('YmdH') . '.' . $this->_config['ext'];
         }
     }
 

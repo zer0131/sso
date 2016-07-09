@@ -1,6 +1,6 @@
 <?php
 
-/** 
+/**
  * @author ryan<zer0131@vip.qq.com>
  * @desc 调度操作类
  */
@@ -8,7 +8,7 @@
 namespace OneFox;
 
 class Dispatcher {
-    
+
     private static $_uri = '';
     private static $_defaultModule = DEFAULT_MODULE;
     private static $_defaultController = DEFAULT_CONTROLLER;
@@ -16,8 +16,8 @@ class Dispatcher {
     private static $_currentModule = null;
     private static $_currentController = null;
     private static $_currentAction = null;
-    
-    public static function dipatcher(){
+
+    public static function dipatcher() {
         //处理url
         if (!IS_CLI) {
             if (isset($_SERVER['PATH_INFO'])) {
@@ -35,16 +35,16 @@ class Dispatcher {
         } else {
             self::$_uri = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : '';
         }
-        
+
         self::$_uri = trim(self::$_uri, '/');//去除'/'
-        
+
         self::_httpRout();
     }
-    
+
     /**
      * 处理uri
      */
-    private static function _httpRout(){
+    private static function _httpRout() {
         $uri = self::$_uri;
         $moduleName = null;
         if ($uri == '') {
@@ -55,17 +55,17 @@ class Dispatcher {
             $actionName = self::$_defaultAction;
         } else {
             $uriArr = explode('/', $uri);
-            
+
             if (MODULE_MODE) {
                 $moduleName = array_shift($uriArr);
-                if(count($uriArr)>0){
+                if (count($uriArr) > 0) {
                     $controllerName = array_shift($uriArr);
-                    if(count($uriArr)>0){
+                    if (count($uriArr) > 0) {
                         $actionName = array_shift($uriArr);
-                    }else{
+                    } else {
                         $actionName = self::$_defaultAction;
                     }
-                }else{
+                } else {
                     $controllerName = self::$_defaultController;
                     $actionName = self::$_defaultAction;
                 }
@@ -78,13 +78,15 @@ class Dispatcher {
             //处理剩余参数
             if (count($uriArr) > 0) {
                 $params = array();
-                preg_replace_callback('/(\w+)\/([^\/]+)/',function($match) use(&$params){$params[$match[1]] = $match[2];},implode('/',$uriArr));// 解析剩余的URL参数
+                preg_replace_callback('/(\w+)\/([^\/]+)/', function ($match) use (&$params) {
+                    $params[$match[1]] = $match[2];
+                }, implode('/', $uriArr));// 解析剩余的URL参数
                 Request::setParams($params, 'get');
             }
         }
-        
+
         //过滤并赋值
-        $moduleName= C::filterChars($moduleName);
+        $moduleName = C::filterChars($moduleName);
         $controllerName = C::filterChars($controllerName);
         $actionName = C::filterChars($actionName);
 
@@ -92,18 +94,18 @@ class Dispatcher {
         self::$_currentController = $controllerName;
         self::$_currentAction = $actionName;
     }
-    
+
     public static function getModuleName() {
         if (is_null(self::$_currentModule)) {
             self::$_currentModule = '';
         }
         return self::$_currentModule;
     }
-    
+
     public static function getControllerName() {
         return ucfirst(strtolower(self::$_currentController));
     }
-    
+
     public static function getActionName() {
         return self::$_currentAction;
     }

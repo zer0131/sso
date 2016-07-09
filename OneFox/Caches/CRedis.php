@@ -1,6 +1,6 @@
 <?php
 
-/** 
+/**
  * @author ryan<zer0131@vip.qq.com>
  * @desc redis缓存类
  */
@@ -12,9 +12,9 @@ use OneFox\Config;
 
 class CRedis extends Cache {
 
-	private $_redis;
+    private $_redis;
 
-	public function __construct() {
+    public function __construct() {
         if (!extension_loaded('redis')) {
             throw new \RuntimeException('redis扩展未加载');
         }
@@ -30,21 +30,21 @@ class CRedis extends Cache {
             );
         }
         $this->_connect();
-	}
+    }
 
-	private function _connect() {
+    private function _connect() {
         $this->_redis = new \Redis();
         $this->_redis->connect($this->options['server']['host'], $this->options['server']['port']);
-	}
+    }
 
-	public function get($name) {
+    public function get($name) {
         if (!$this->_redis) {
             $this->_connect();
         }
-        return $this->_redis->get($this->options['prefix'].$name);
-	}
+        return $this->_redis->get($this->options['prefix'] . $name);
+    }
 
-	public function set($name, $value, $expire=null) {
+    public function set($name, $value, $expire = null) {
         if ($this->_redis) {
             $this->_connect();
         }
@@ -52,38 +52,41 @@ class CRedis extends Cache {
             $expire = $this->options['expire'];
         }
         if (intval($expire) === 0) {
-            return $this->_redis->set($this->options['prefix'].$name, $value);
+            return $this->_redis->set($this->options['prefix'] . $name, $value);
         } else {
-            return $this->_redis->setEx($this->options['prefix'].$name, intval($expire), $value);
+            return $this->_redis->setEx($this->options['prefix'] . $name, intval($expire), $value);
         }
-	}
+    }
 
-	public function rm($name, $ttl=0) {
+    public function rm($name, $ttl = 0) {
         if (!$this->_redis) {
             $this->_connect();
         }
-        return $this->_redis->delete($this->options['prefix'].$name);
-	}
+        return $this->_redis->delete($this->options['prefix'] . $name);
+    }
 
-	public function clear() {
+    public function clear() {
         if (!$this->_redis) {
             $this->_connect();
         }
         return $this->_redis->flushAll();
-	}
+    }
 
-	public function __call($funcName, $arguments) {
+    public function __call($funcName, $arguments) {
         if (!$this->_redis) {
             $this->_connect();
         }
-        $res = call_user_func_array(array($this->_redis, $funcName), $arguments);
+        $res = call_user_func_array(array(
+            $this->_redis,
+            $funcName
+        ), $arguments);
         return $res;
-	}
+    }
 
-	public function __destruct() {
+    public function __destruct() {
         $this->_redis->close();
         if ($this->_redis) {
             $this->_redis = null;
         }
-	}
+    }
 }

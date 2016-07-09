@@ -13,35 +13,32 @@ class Crypt {
 
     /**
      * 加密
-     * @param  string $defaultKey 关键密钥
      * @param  string $str 需加密的字串
      * @param int $expiry
      * @return string 加密后的加密字串
      */
-    public static function encode($str,$expiry=0){
-        return self::_cryptCode($str,"encode",$expiry);
+    public static function encode($str, $expiry = 0) {
+        return self::_cryptCode($str, "encode", $expiry);
     }
 
     /**
      * 解密
-     * @param  string $defaultKey 关键密钥
      * @param  string $str 需解密的字串
-     * @param  int $expiry
      * @return string 解密后的字串
      */
-    public static function decode($str){
-        return self::_cryptCode($str,"decode");
+    public static function decode($str) {
+        return self::_cryptCode($str, "decode");
     }
 
     /**
      * 加密解密
      * @param  string $str 加密串
-     * @param  string $operation 操作类型（机密或解密）	加密encode , 解密decode
+     * @param  string $operation 操作类型（机密或解密）    加密encode , 解密decode
      * @param int $expiry (0表示永久)
      * @param  string $defaultKey 关键密钥
      * @return string 加密或解密串
      */
-    private static function _cryptCode($str, $operation = "decode", $expiry = 0, $defaultKey=''){
+    private static function _cryptCode($str, $operation = "decode", $expiry = 0, $defaultKey = '') {
         if (empty($defaultKey)) {
             $defaultKey = self::CRYPT_KEY;
         }
@@ -93,7 +90,7 @@ class Crypt {
                 return '';
             }
         } else {
-            return $keyc.base64_encode($result);
+            return $keyc . base64_encode($result);
         }
     }
 }

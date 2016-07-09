@@ -8,7 +8,7 @@
 namespace OneFox;
 
 class Response {
-    
+
     private static $_cookieConfig = array(
         'prefix' => '',
         'expire' => 0,
@@ -44,9 +44,9 @@ class Response {
 
     /**
      * 输出json数据
-     * @param type $data
+     * @param array $data
      */
-    public static function json($data){
+    public static function json($data) {
         header('Content-Type:application/json; charset=utf-8');
         header('X-Powered-By: OneFox');
         if (DEBUG) {
@@ -56,12 +56,12 @@ class Response {
         self::$_resType = 'application/json';
         exit(json_encode($data));
     }
-    
+
     /**
      * 输出xml数据
-     * @param type $data
+     * @param array $data
      */
-    public static function xml($data){
+    public static function xml($data) {
         header('Content-Type:text/xml; charset=utf-8');
         header('X-Powered-By: OneFox');
         if (DEBUG) {
@@ -69,20 +69,21 @@ class Response {
         }
         self::$_resData = $data;
         self::$_resType = 'text/xml';
-        exit(xml_encode($data));
+        exit(C::xml_encode($data));
     }
-    
+
     /**
      * Cookie相关操作
-     * @param type $name
-     * @param type $value
-     * @param type $opt
+     * @param string $name
+     * @param string $value
+     * @param string $opt
+     * @return string|null
      */
-    public static function cookie($name='', $value='', $opt=null){
+    public static function cookie($name = '', $value = '', $opt = null) {
         //参数设置处理
         if (!is_null($opt)) {
             if (is_numeric($opt)) {
-                $opt = array('expire'=>$opt);//设置有效期
+                $opt = array('expire' => $opt);//设置有效期
             }
             self::$_cookieConfig = array_merge(self::$_cookieConfig, $opt);
         }
@@ -91,7 +92,7 @@ class Response {
             $cookies = Request::cookies();
             if (!empty($cookies)) {
                 foreach ($cookies as $key => $val) {
-                    setcookie($key, '', time() - 3600, self::$_cookieConfig['path'], self::$_cookieConfig['domain'],self::$_cookieConfig['secure'],self::$_cookieConfig['httponly']);
+                    setcookie($key, '', time() - 3600, self::$_cookieConfig['path'], self::$_cookieConfig['domain'], self::$_cookieConfig['secure'], self::$_cookieConfig['httponly']);
                     Request::unsetParam($key, 'cookie');
                 }
             }
@@ -99,7 +100,7 @@ class Response {
         } elseif ('' === $name) {
             return Request::cookies();//获取所有cookie
         }
-        $cookieKey = self::$_cookieConfig['prefix'].$name;
+        $cookieKey = self::$_cookieConfig['prefix'] . $name;
         if ('' === $value) {
             //获取指定的Cookie
             if (Request::cookie($cookieKey)) {
@@ -109,12 +110,12 @@ class Response {
         } else {
             if (is_null($value)) {
                 //删除指定Cookie
-                setcookie($cookieKey, '', time() - 3600, self::$_cookieConfig['path'], self::$_cookieConfig['domain'],self::$_cookieConfig['secure'],self::$_cookieConfig['httponly']);
+                setcookie($cookieKey, '', time() - 3600, self::$_cookieConfig['path'], self::$_cookieConfig['domain'], self::$_cookieConfig['secure'], self::$_cookieConfig['httponly']);
                 Request::unsetParam($cookieKey, 'cookie');
             } else {
                 //设置Cookie
                 $expire = !empty(self::$_cookieConfig['expire']) ? time() + intval(self::$_cookieConfig['expire']) : 0;
-                setcookie($cookieKey, $value, $expire, self::$_cookieConfig['path'], self::$_cookieConfig['domain'],self::$_cookieConfig['secure'],self::$_cookieConfig['httponly']);
+                setcookie($cookieKey, $value, $expire, self::$_cookieConfig['path'], self::$_cookieConfig['domain'], self::$_cookieConfig['secure'], self::$_cookieConfig['httponly']);
             }
         }
         return null;
@@ -126,14 +127,18 @@ class Response {
      * @param int $time
      * @param string $msg
      */
-    public static function redirect($url, $time=0, $msg=''){
+    public static function redirect($url, $time = 0, $msg = '') {
         //多行URL地址支持
-        $url = str_replace(array("\n", "\r"), '', $url);
-        if (empty($msg)) $msg = "系统将在{$time}秒之后自动跳转到{$url}！";
+        $url = str_replace(array(
+            "\n",
+            "\r"
+        ), '', $url);
+        if (empty($msg))
+            $msg = "系统将在{$time}秒之后自动跳转到{$url}！";
         if (!headers_sent()) {
             // redirect
             if (0 === $time) {
-                header('Location: '.$url);
+                header('Location: ' . $url);
             } else {
                 header("refresh:{$time};url={$url}");
                 echo($msg);
@@ -141,7 +146,8 @@ class Response {
             exit();
         } else {
             $str = "<meta http-equiv='Refresh' content='{$time};URL={$url}'>";
-            if ($time != 0) $str .= $msg;
+            if ($time != 0)
+                $str .= $msg;
             exit($str);
         }
     }

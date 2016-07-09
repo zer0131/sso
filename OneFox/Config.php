@@ -1,6 +1,6 @@
 <?php
 
-/** 
+/**
  * @author: ryan<zer0131@vip.qq.com>
  * @desc: 读取配置文件
  */
@@ -8,9 +8,9 @@
 namespace OneFox;
 
 class Config {
-    
+
     private static $_config = array();
-    
+
     /**
      * 获取配置文件,支持二级点操作
      * 操作示例：Config::get('config.test')
@@ -18,7 +18,7 @@ class Config {
      * @param string $default
      * @return type
      */
-    public static function get($name, $default=null){
+    public static function get($name, $default = null) {
         if (!$name) {
             return null;
         }
@@ -32,19 +32,19 @@ class Config {
         }
         return isset(self::$_config[$confFile]) ? self::$_config[$confFile] : $default;
     }
-    
+
     /**
      * 设置配置项
      * @param string $name
      * @param type $value
      */
-    public static function set($name, $value=null){
+    public static function set($name, $value = null) {
         self::$_config[$name] = $value;
     }
-    
-    private static function _loadConfig($confFile){
+
+    private static function _loadConfig($confFile) {
         $confFile = C::filterChars($confFile);
-        $file = CONF_PATH.DS.$confFile.'.php';
+        $file = CONF_PATH . DS . $confFile . '.php';
         $res = C::loadFile($file);
         return $res;
     }

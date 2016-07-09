@@ -1,6 +1,6 @@
 <?php
 
-/** 
+/**
  * @author ryan<zer0131@vip.qq.com>
  * @desc 视图类
  */
@@ -12,9 +12,9 @@ class View {
     protected $tplVal = array();
     protected $ext = '';
 
-    public function __construct($ext='') {
+    public function __construct($ext = '') {
         if ($ext) {
-            $this->ext = '.'.$ext;
+            $this->ext = '.' . $ext;
         } else {
             $this->ext = '.php';
         }
@@ -24,7 +24,7 @@ class View {
      * 模板赋值
      * 传入数组则为批量赋值
      */
-    public function assign($name, $value='') {
+    public function assign($name, $value = '') {
         if (is_array($name)) {
             $this->tplVal = array_merge($this->tplVal, $name);
         } else {
@@ -35,23 +35,26 @@ class View {
     /**
      * 输出模板
      */
-    public function render($tplFile='') {
+    public function render($tplFile = '') {
         $content = $this->_getFetch($tplFile, $this->tplVal);
         header('Content-Type: text/html; charset=utf-8');
         header('Cache-control: private');  // 页面缓存控制
         header('X-Powered-By: OneFox');
-        Response::setResData(array('template'=>$this->_parsePath($tplFile), 'template_value'=>$this->tplVal));
+        Response::setResData(array(
+            'template' => $this->_parsePath($tplFile),
+            'template_value' => $this->tplVal
+        ));
         Response::setResType('text/html');
         echo $content;
     }
 
-    public function fetch($tplFile='') {
+    public function fetch($tplFile = '') {
         return $this->_getFetch($tplFile, $this->tplVal);
     }
 
     /**
      * 获取模板内容
-     */ 
+     */
     private function _getFetch($tplFile, $data) {
         $tplFile = $this->_parsePath($tplFile);
         if (!is_file($tplFile)) {
@@ -68,30 +71,30 @@ class View {
     /**
      * 用于包含模板
      * 示例：$this->import('header', array('title'=>'xxxx'));
-     */ 
-    public function import($path, $newVal=array()) {
+     */
+    public function import($path, $newVal = array()) {
         if (!$path) {
             throw new \RuntimeException('模板路径不正确');
         }
         $path = $this->_parsePath($path);
-        echo $this->_getFetch($path, array_merge($this->tplVal, $newVal));	
+        echo $this->_getFetch($path, array_merge($this->tplVal, $newVal));
     }
 
     /**
      * 解析模板路径
-     */ 
+     */
     private function _parsePath($path) {
         if (is_file($path)) {
             return $path;
         }
-        if (''===$path) {
+        if ('' === $path) {
             if (MODULE_MODE) {
-                $path = CURRENT_MODULE.DS.CURRENT_CONTROLLER.DS.CURRENT_ACTION;
+                $path = CURRENT_MODULE . DS . CURRENT_CONTROLLER . DS . CURRENT_ACTION;
             } else {
-                $path = CURRENT_CONTROLLER.DS.CURRENT_ACTION;
+                $path = CURRENT_CONTROLLER . DS . CURRENT_ACTION;
             }
         }
-        return TPL_PATH.DS.$path.$this->ext;
+        return TPL_PATH . DS . $path . $this->ext;
     }
 
 }
