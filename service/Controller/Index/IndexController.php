@@ -14,6 +14,8 @@ class IndexController extends Controller {
      * 默认方法
      */
     public function indexAction() {
-        echo 'ok';
+        $url = 'http://www.appryan.com/php/2016/04/02/sso.html';
+        header('Content-type:text/html;charset=utf-8');
+        echo '请阅读详细手册: '.$url;
     }
 }

@@ -17,6 +17,9 @@ use OneFox\ApiController;
 
 class LoginController extends ApiController {
 
+    /**
+     * 统一登陆跳转地址[GET]
+     */
     public function indexAction() {
         $appId = $this->get('app_id', 0, 'int');
         if (!$appId) {
@@ -81,5 +84,16 @@ class LoginController extends ApiController {
         $loginUrl = Config::get('sso.login_url');
         $loginUrl .= '?' . $param;
         Response::redirect($loginUrl);
+    }
+
+    /**
+     * 校验登陆提交[POST]
+     */
+    public function check_loginAction() {
+        if (Request::method() == 'post') {
+            //完善你的登陆逻辑
+        } else {
+            $this->json(self::CODE_FAIL, 'url error');
+        }
     }
 }
