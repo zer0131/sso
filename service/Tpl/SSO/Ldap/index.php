@@ -46,6 +46,8 @@
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+  <!--添加jquery文件并以post方式向后台提交登陆-->
   
 
 </body></html>
