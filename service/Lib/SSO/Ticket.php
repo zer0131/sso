@@ -3,7 +3,7 @@
 /**
  * @author ryan
  * @desc ticket操作类
- */ 
+ */
 
 namespace SSO;
 
@@ -18,8 +18,8 @@ class Ticket {
      * @param string $prefix
      * @return string
      */
-    public function genSubTicket($str, $prefix=self::PREFIX){
-        return Crypt::encode($prefix.$str);
+    public function genSubTicket($str, $prefix = self::PREFIX) {
+        return Crypt::encode($prefix . $str);
     }
 
     /**
@@ -28,8 +28,8 @@ class Ticket {
      * @param string $prefix
      * @return string
      */
-    public function genSysTicket($str, $prefix=self::PREFIX){
-        return Crypt::encode($prefix.$str);
+    public function genSysTicket($str, $prefix = self::PREFIX) {
+        return Crypt::encode($prefix . $str);
     }
 
     /**
@@ -38,16 +38,17 @@ class Ticket {
      * @param string $prefix
      * @return string
      */
-    public function originData($ticket, $prefix=self::PREFIX){
+    public function originData($ticket, $prefix = self::PREFIX) {
         $decodeStr = Crypt::decode($ticket);
         return substr($decodeStr, strlen($prefix));
     }
 
     /**
      * 校验ticket
-     * @param string $encodedStr
+     * @param string $ticket
+     * @return bool
      */
-    public function checkTicket($ticket){
+    public function checkTicket($ticket) {
         $sessionId = $this->originData($ticket);
         $sessObj = new Session();
         return $sessObj->isExists($sessionId);//使用session校验

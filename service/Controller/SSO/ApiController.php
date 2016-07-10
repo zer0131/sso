@@ -14,7 +14,7 @@ use SSO\Session;
 use SSO\Ticket;
 
 class ApiController extends BaseController {
-    
+
     protected function _init() {
         if (Request::method() != 'post') {
             $this->json(self::CODE_FAIL, 'error');
@@ -23,7 +23,7 @@ class ApiController extends BaseController {
 
     /**
      * 校验code[POST]
-     */ 
+     */
     public function check_codeAction() {
         $code = $this->post('code');
         $appKey = $this->post('app_key');
@@ -48,7 +48,7 @@ class ApiController extends BaseController {
         }
 
         //获取session
-        $sessObj = new Session(); 
+        $sessObj = new Session();
         $sessionData = $sessObj->getSession($res);
 
         //生成子系统ticket
@@ -56,14 +56,17 @@ class ApiController extends BaseController {
         $ticket = $ticketObj->genSubTicket($res);
 
         //返回数据
-        $data = array('ticket'=>$ticket, 'username'=>$sessionData['username']);
+        $data = array(
+            'ticket' => $ticket,
+            'username' => $sessionData['username']
+        );
         $this->json(self::CODE_SUCCESS, 'ok', $data);
     }
 
 
     /**
      * 校验ticket[POST]
-     */ 
+     */
     public function check_ticketAction() {
         $ticket = $this->post('ticket');
         $appId = $this->post('app_id', 0, 'int');
@@ -80,7 +83,7 @@ class ApiController extends BaseController {
         }
 
         //重置session过期时间
-        $r = $sessObj>extendedTime($sessionId);
+        $r = $sessObj->extendedTime($sessionId);
 
         $this->json(self::CODE_SUCCESS, 'ok');
     }

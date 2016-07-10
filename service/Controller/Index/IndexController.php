@@ -9,11 +9,11 @@ namespace Controller\Index;
 use OneFox\Controller;
 
 class IndexController extends Controller {
-    
+
     /**
      * 默认方法
      */
-    public function indexAction(){
+    public function indexAction() {
         echo 'ok';
     }
 }

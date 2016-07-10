@@ -3,7 +3,7 @@
 /**
  * @author ryan
  * @desc 模拟ldap
- */ 
+ */
 
 namespace Controller\SSO;
 

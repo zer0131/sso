@@ -3,7 +3,7 @@
 /**
  * @author ryan
  * @desc code操作类
- */ 
+ */
 
 namespace SSO;
 
@@ -25,9 +25,9 @@ class Code {
      * @param int $cacheTime
      * @return string
      */
-    public function generateCode($data, $cacheTime=self::TOKEN_EXPIRE){
+    public function generateCode($data, $cacheTime = self::TOKEN_EXPIRE) {
         $cacheKey = md5(uniqid(microtime(true), true));
-        if ($this->_cache->set(self::PREFIX.$cacheKey, $data, $cacheTime)) {
+        if ($this->_cache->set(self::PREFIX . $cacheKey, $data, $cacheTime)) {
             return $cacheKey;
         }
         return '';
@@ -38,12 +38,12 @@ class Code {
      * @param string $code
      * @return string
      */
-    public function checkCode($code){
-        $data = $this->_cache->get(self::PREFIX.$code);
+    public function checkCode($code) {
+        $data = $this->_cache->get(self::PREFIX . $code);
         if (!$data) {
             return '';
         } else {
-            $this->_cache->rm(self::PREFIX.$code);
+            $this->_cache->rm(self::PREFIX . $code);
             return $data;
         }
     }

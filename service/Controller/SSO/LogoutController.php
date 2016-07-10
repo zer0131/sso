@@ -3,7 +3,7 @@
 /**
  * @author ryan
  * @desc sso退出控制器
- */ 
+ */
 
 namespace Controller\SSO;
 
@@ -35,7 +35,7 @@ class LogoutController extends ApiController {
         $sessObj->delete($sessionId);
 
         //清除服务端cookie
-        setcookie($cookieName, '', time()-31500000, Config::get('sso.cookie_path'), '');
+        setcookie($cookieName, '', time() - 31500000, Config::get('sso.cookie_path'), '');
         $paramArr = array(
             'jumpto' => $jumpto ? urlencode($jumpto) : 'index',
             'app_id' => $appId
@@ -43,7 +43,7 @@ class LogoutController extends ApiController {
         $param = http_build_query($paramArr);
 
         $loginUrl = Config::get('sso.login_url');
-        $loginUrl .= '?'.$param;
+        $loginUrl .= '?' . $param;
         Response::redirect($loginUrl);
     }
 }

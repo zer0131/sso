@@ -2,7 +2,7 @@
 
 /**
  * @author ryan
- * @desc sso登陆控制器 
+ * @desc sso登陆控制器
  */
 namespace Controller\SSO;
 
@@ -61,7 +61,7 @@ class LoginController extends ApiController {
 
         //携带code重定向至子系统callback页面
         $appInfo = $apps[$appId];
-        $callback = rtrim($appInfo['callback_url'], '?').'?jumpto='.urlencode($jumpto).'&code='.$code;
+        $callback = rtrim($appInfo['callback_url'], '?') . '?jumpto=' . urlencode($jumpto) . '&code=' . $code;
 
         Response::redirect($callback);
     }
@@ -71,7 +71,7 @@ class LoginController extends ApiController {
      * @param int $appId
      * @param string $jumpto
      */
-    private function _redirectLDAP($appId, $jumpto){
+    private function _redirectLDAP($appId, $jumpto) {
         $paramArr = array(
             'jumpto' => $jumpto ? urlencode($jumpto) : 'index',
             'app_id' => $appId
@@ -79,7 +79,7 @@ class LoginController extends ApiController {
         $param = http_build_query($paramArr);
 
         $loginUrl = Config::get('sso.login_url');
-        $loginUrl .= '?'.$param;
+        $loginUrl .= '?' . $param;
         Response::redirect($loginUrl);
     }
 }
